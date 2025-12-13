@@ -24,10 +24,12 @@
         font-family: Arial;
     }
     table {
+        padding: 1.5em;
         width: 100%;
     }
     table.seats {
         table-layout: fixed;
+        border-spacing: 0;
     }
     table.seats div {
         position: relative;
@@ -43,6 +45,18 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    td.rownum {
+        font-size: small;
+        font-style: italic;
+    }
+    td.row {
+        border-bottom: 1px solid #aaa;
+    }
+    td.seat span {
+        border-radius: 0.5em;
+        //color: white;
+        background-image: linear-gradient(white, wheat);
     }
     </style>
     <script type="text/javascript">
@@ -62,7 +76,7 @@
       table.classList.add('seats');
       table.appendChild(tbody);
 
-      var scheme = startParam.seats, width = 0, rows = 0;
+      var scheme = startParam.seats, width = 0, rows = 0, total = 0;
       scheme = scheme.split("\n");
       for (let i in scheme)
         width = Math.max(width, scheme[i].length);
@@ -73,17 +87,29 @@
           scheme[i] = scheme[i].padEnd(width);
         for (let j in scheme[i]) {
           const td = addCell(scheme[i][j] == ' ' ? ' ' : ''+count);
-          if (scheme[i][j] != ' ')
+          if (scheme[i][j] != ' ') {
+            td.classList.add('seat');
+            if (scheme[i][j] == 'S')
+              td.classList.add('selected');
+            else if (scheme[i][j] == 'H')
+              td.classList.add('held');
+            td.setAttribute('data-id', total++);
             count++;
+          }
           tr.appendChild(td);
         }
         if (count) {
-          for (var j = 0; j < tr.children.length; j++) {
-            var n = parseInt(tr.children[j].children[0].children[0].textContent);
-            if (!isNaN(n))
-              tr.children[j].children[0].children[0].textContent = ''+(count - n);
+          var st = tr.children;
+          for (var j = 0; j < st.length; j++) {
+            var n = parseInt(st[j].children[0].children[0].textContent);
+            if (!isNaN(n)) {
+              st[j].children[0].children[0].textContent = ''+(count - n);
+              st[j].setAttribute('data-row', rows+1);
+            }
+            st[j].classList.add('row');
           }
-          const td = addCell(''+(rows+1));
+          const td = addCell('Ряд '+(rows+1));
+          td.classList.add('row', 'rownum');
           tr.appendChild(td);
           rows++;
         }
