@@ -45,9 +45,52 @@
     }
     </style>
     <script type="text/javascript">
+    function addCell(text) {
+      const td = document.createElement('td');
+      const div = document.createElement('div');
+      const span = document.createElement('span');
+      span.textContent = text;
+      div.appendChild(span);
+      td.appendChild(div);
+      return td;
+    }
+    function displaySeats() {
+      document.getElementsByTagName('body')[0].innerHTML = '';
+      const table = document.createElement('table');
+      const tbody = document.createElement('tbody');
+      table.classList.add('seats');
+      table.appendChild(tbody);
+
+      var scheme = startParam.seats, width = 0, rows = 0;
+      scheme = scheme.split("\n");
+      for (let i in scheme)
+        width = Math.max(width, scheme[i].length);
+      for (let i in scheme) {
+        const tr = document.createElement('tr');
+        var count = 0;
+        if (scheme[i].length < width)
+          scheme[i] = scheme[i].padEnd(width);
+        for (let j in scheme[i]) {
+          const td = addCell(scheme[i][j] == ' ' ? '&nbsp;' : '[x]');
+          if (scheme[i][j] != ' ')
+            count++;
+          tr.appendChild(td);
+        }
+        if (count) {
+          const td = addCell(''+(rows+1));
+          tr.appendChild(td);
+          rows++;
+        }
+        tbody.appendChild(tr);
+      }
+      document.body.appendChild(table);
+    }
     function onWindowLoad() {
         window.startParam = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
         startParam = JSON.parse(atob(startParam));
+
+        if (startParam.seats)
+          displaySeats();
     }
     </script>
 </head>
