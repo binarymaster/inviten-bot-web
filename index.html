@@ -7,6 +7,37 @@
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
     <title></title>
     <style>
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    html, body, table.init {
+        height: 100%;
+    }
+    body {
+        margin: 0;
+    }
+    table {
+        width: 100%;
+    }
+    table.seats {
+        table-layout: fixed;
+    }
+    table.seats div {
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%;
+    }
+    table.seats span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     </style>
     <script type="text/javascript">
     function onWindowLoad() {
@@ -17,6 +48,14 @@
 </head>
 
 <body onload="onWindowLoad()">
-Testing...
+
+<table class="init">
+  <tr>
+    <td>
+      Загрузка...
+    </td>
+  </tr>
+</table>
+
 </body>
 </html>
