@@ -27,6 +27,7 @@
     table {
         padding: 6vmax;
         width: 100%;
+        cursor: default;
     }
     table.seats {
         table-layout: fixed;
@@ -59,6 +60,37 @@
         //color: white;
         background-image: linear-gradient(white, wheat);
     }
+    td.seat.selected span {
+        background-image: linear-gradient(#ff0, #ffe);
+        border: 1px solid black;
+    }
+    td.seat span:hover {
+        color: white;
+        background: #444;
+    }
+    td.seat.held span {
+        color: black;
+        background: lightgray;
+    }
+    div.top {
+	    position: fixed;
+	    width: 100%;
+	    height: 7vmax;
+	    padding: 1vmax;
+	    background: #ffd;
+		border-bottom: 1px solid black;
+		z-index: 10;
+    }
+    div.top button {
+        font-size: 1.8vmax;
+        float: right;
+        margin-right: 2vmax;
+        min-width: 20vmax;
+        min-height: 7vmax;
+    }
+    div.top p {
+        font-size: 1.8vmax;
+    }
     </style>
     <script type="text/javascript">
     function addCell(text) {
@@ -69,6 +101,45 @@
       div.appendChild(span);
       td.appendChild(div);
       return td;
+    }
+    function updateSelected() {
+      const pr = document.getElementById('selection');
+
+      const sel = document.getElementsByClassName('selected');
+      if (sel.length == 0) {
+        pr.textContent = 'Места не выбраны';
+        return;
+      }
+
+      var text = [];
+      for (var i = 0; i < sel.length; i++) {
+        text.push(`ряд ${sel[i].getAttribute('data-row')} место ${sel[i].textContent}`);
+      }
+      pr.textContent = 'Выбраны места: ' + text.join(', ');
+    }
+    function doSelect(e) {
+      const td = e.currentTarget;
+      if (td.classList.contains('selected'))
+        td.classList.remove('selected');
+      else {
+        if (startParam.maxsel) {
+          const sel = document.getElementsByClassName('selected');
+          if (sel.length >= startParam.maxsel)
+            return;
+        }
+        td.classList.add('selected');
+      }
+      updateSelected();
+    }
+    function submitSelection() {
+      const sel = document.getElementsByClassName('selected');
+
+      var data = [];
+      for (var i = 0; i < sel.length; i++) {
+        data.push(sel[i].getAttribute('data-id'));
+      }
+
+      Telegram.WebApp.sendData(data.join(','));
     }
     function displaySeats() {
       document.getElementsByTagName('body')[0].innerHTML = '';
@@ -95,6 +166,8 @@
             else if (scheme[i][j] == 'H')
               td.classList.add('held');
             td.setAttribute('data-id', total++);
+            if (scheme[i][j] == 'x' || scheme[i][j] == 'S')
+              td.addEventListener("click", doSelect);
             count++;
           }
           tr.appendChild(td);
@@ -125,7 +198,21 @@
         }
         tbody.appendChild(tr);
       }
+
+      const div = document.createElement('div');
+      const btn = document.createElement('button');
+      const pr = document.createElement('p');
+      div.classList.add('top');
+      div.textContent = (startParam.reserve ? '💺 Резервирование мест в зале' : '💺 Выбор мест в зале');
+      btn.textContent = 'Подтвердить';
+      btn.addEventListener("click", submitSelection);
+      div.appendChild(btn);
+      pr.setAttribute('id', 'selection');
+      div.appendChild(pr);
+
+      document.body.appendChild(div);
       document.body.appendChild(table);
+      updateSelected();
     }
     function onWindowLoad() {
         window.startParam = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
