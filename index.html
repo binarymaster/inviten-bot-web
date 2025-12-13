@@ -10,7 +10,8 @@
     </style>
     <script type="text/javascript">
     function onWindowLoad() {
-        window.urlParams = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
+        window.startParam = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
+        startParam = JSON.parse(atob(startParam));
     }
     </script>
 </head>
