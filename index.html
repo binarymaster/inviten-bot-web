@@ -72,15 +72,16 @@
         if (scheme[i].length < width)
           scheme[i] = scheme[i].padEnd(width);
         for (let j in scheme[i]) {
-          const td = addCell(scheme[i][j] == ' ' ? ' ' : '[x]');
+          const td = addCell(scheme[i][j] == ' ' ? ' ' : ''+count);
           if (scheme[i][j] != ' ')
             count++;
           tr.appendChild(td);
         }
         if (count) {
           for (var j = 0; j < tr.children.length; j++) {
-            if (tr.children[j].children[0].children[0].textContent == '[x]')
-              tr.children[j].children[0].children[0].textContent = ''+(count - j);
+            var n = parseInt(tr.children[j].children[0].children[0].textContent);
+            if (!isNaN(n))
+              tr.children[j].children[0].children[0].textContent = ''+(count - n);
           }
           const td = addCell(''+(rows+1));
           tr.appendChild(td);
