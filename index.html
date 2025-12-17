@@ -23,12 +23,15 @@
         background-image: linear-gradient(wheat, white);
         background-attachment: fixed;
         font-family: Arial;
+        display: flex;
+        flex-direction: column;
     }
     table {
         width: 100%;
         cursor: default;
     }
     table.seats {
+        display: inline-table;
         table-layout: fixed;
         padding: 0vmax 2vmax 0vmax 2vmax;
         border-spacing: 0;
@@ -75,20 +78,22 @@
         color: black;
         background: lightgray;
     }
+    div.wrapper {
+        flex: 1;
+        overflow: auto;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+    }
     div.top {
-	    top: 0;
-	    position: sticky;
-	    width: 100%;
 	    min-height: 7vmax;
 	    padding: 1vmax;
 	    background: #ffd;
 		border-bottom: 1px solid black;
-		z-index: 10;
     }
     div.top button {
         font-size: 1.8vmax;
         float: right;
-        margin-right: 2vmax;
         min-width: 20vmax;
         min-height: 7vmax;
     }
@@ -218,9 +223,18 @@
       pr.setAttribute('id', 'selection');
       div.appendChild(pr);
 
+      const wrp = document.createElement('div');
+      wrp.classList.add('wrapper');
+
       document.body.appendChild(div);
-      document.body.appendChild(table);
+      wrp.appendChild(table);
+      document.body.appendChild(wrp);
       updateSelected();
+
+      const resizeObserver = new ResizeObserver(e => {
+        table.style.width = (wrp.clientHeight > wrp.clientWidth ? `${Math.floor(wrp.clientHeight * table.clientWidth / table.clientHeight)}px` : '');
+      });
+      resizeObserver.observe(wrp);
     }
     function onWindowLoad() {
         window.startParam = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
