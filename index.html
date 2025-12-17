@@ -48,9 +48,12 @@
         justify-content: center;
         align-items: center;
     }
-    td.rownum {
+    td.rownum, td.rownumtitle {
         font-size: 1.8vmax;
         font-style: italic;
+    }
+    td.rownumtitle {
+        vertical-align: bottom;
     }
     td.row {
         border-bottom: 1px solid #aaa;
@@ -174,31 +177,33 @@
           tr.appendChild(td);
         }
         if (count) {
-          var td = addCell(' ');
-          td.classList.add('row');
-          tr.prepend(td);
-          td = addCell('Ряд '+(rows+1));
+          var td = addCell(''+(rows+1));
           td.classList.add('row', 'rownum');
           tr.prepend(td);
           var st = tr.children;
           for (var j = 0; j < st.length; j++) {
             var n = parseInt(st[j].children[0].children[0].textContent);
-            if (!isNaN(n)) {
+            if (!(st[j].classList.contains('rownum')) && !isNaN(n)) {
               st[j].children[0].children[0].textContent = ''+(count - n);
               st[j].setAttribute('data-row', rows+1);
             }
             st[j].classList.add('row');
           }
-          td = addCell(' ');
-          td.classList.add('row');
-          tr.appendChild(td);
-          td = addCell('Ряд '+(rows+1));
+          td = addCell(''+(rows+1));
           td.classList.add('row', 'rownum');
           tr.appendChild(td);
           rows++;
         }
         tbody.appendChild(tr);
       }
+      var td = document.createElement('td');
+      td.textContent = 'Ряд';
+      td.classList.add('rownumtitle');
+      tbody.children[0].prepend(td);
+      td = document.createElement('td');
+      td.textContent = 'Ряд';
+      td.classList.add('rownumtitle');
+      tbody.children[0].appendChild(td);
 
       const div = document.createElement('div');
       const btn = document.createElement('button');
