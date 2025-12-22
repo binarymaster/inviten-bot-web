@@ -251,6 +251,7 @@
       div.appendChild(pr);
 
       const wrp = document.createElement('div');
+      const wrp2 = document.createElement('div');
       wrp.classList.add('wrapper');
 
       document.body.appendChild(div);
@@ -258,23 +259,23 @@
       var div = document.createElement('div');
       div.classList.add('scene');
       div.textContent = 'Сцена';
-      wrp.appendChild(div);
+      wrp2.appendChild(div);
       var scene = div;
       div = document.createElement('div');
       div.classList.add('sound');
       div.textContent = 'Звукооператор';
-      wrp.appendChild(div);
+      wrp2.appendChild(div);
       var sound = div;
 
-      wrp.appendChild(table);
+      wrp2.appendChild(table);
+      wrp.appendChild(wrp2);
       document.body.appendChild(wrp);
       updateSelected();
 
       const obs1 = (new ResizeObserver(e => {
-        var sc = scene.getClientRects()[0];
         var wr = wrp.getClientRects()[0];
-        var tb = table.getClientRects()[0];
-        table.style.width = (wr.height > wr.width ? `${Math.floor((wr.height - sc.height - 19) * tb.width / tb.height)}px` : '');
+        var w2 = wrp2.getClientRects()[0];
+        wrp2.style.width = (wr.height > wr.width ? `${Math.floor((wr.height - 19) * w2.width / w2.height)}px` : '');
       })).observe(wrp);
       const obs2 = (new ResizeObserver(e => {
         var rect = document.querySelectorAll('[data-id="136"]')[0].getClientRects()[0];
