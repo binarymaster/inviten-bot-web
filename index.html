@@ -274,7 +274,7 @@
         var sc = scene.getClientRects()[0];
         var wr = wrp.getClientRects()[0];
         var tb = table.getClientRects()[0];
-        table.style.width = (wr.height > wr.width ? `${Math.floor((wr.height - sc.height - 12) * tb.width / tb.height)}px` : '');
+        table.style.width = (wr.height > wr.width ? `${Math.floor((wr.height - sc.height - 19) * tb.width / tb.height)}px` : '');
       })).observe(wrp);
       const obs2 = (new ResizeObserver(e => {
         var rect = document.querySelectorAll('[data-id="136"]')[0].getClientRects()[0];
