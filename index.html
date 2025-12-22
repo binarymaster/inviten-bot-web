@@ -52,6 +52,10 @@
         justify-content: center;
         align-items: center;
     }
+    table.seats span.wall {
+        background: white;
+        border: 1px solid;
+    }
     td.rownum, td.rownumtitle {
         font-size: 1.8vmax;
         font-style: italic;
@@ -207,6 +211,9 @@
             if (scheme[i][j] == 'x' || scheme[i][j] == 'S')
               td.addEventListener("click", doSelect);
             count++;
+          } else {
+            if ((i == 1 && j == 2) || (i == 1 && j == 12) || (i == 8 && j == 2) || (i == 8 && j == 12))
+              td.getElementsByTagName('span')[0].classList.add('wall');
           }
           tr.appendChild(td);
         }
