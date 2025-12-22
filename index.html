@@ -64,7 +64,6 @@
     }
     td.seat span {
         border-radius: 0.7vmax;
-        //color: white;
         background-image: linear-gradient(white, wheat);
     }
     td.seat.selected span {
@@ -85,22 +84,49 @@
         width: 100%;
         height: 100%;
         text-align: center;
+        position: relative;
     }
     div.top {
-	    min-height: 7vmax;
-	    padding: 1vmax;
-	    background: #ffd;
-		border-bottom: 1px solid black;
+        min-height: 7vmax;
+        padding: 1vmax;
+        background: #ffd;
+        border-bottom: 1px solid black;
     }
     div.top button {
-        font-size: 1.8vmax;
+        font-size: 2.6vmax;
         float: right;
         min-width: 20vmax;
         min-height: 7vmax;
+        background: #00b;
+        color: white;
+        border: unset;
+        border-radius: 0.7vmax;
     }
     div.top p {
         font-size: 1.8vmax;
         margin-bottom: 0;
+    }
+    div.scene {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eee;
+        font-size: 4vmax;
+        font-style: italic;
+        border: 1px solid;
+        border-top: unset;
+        margin-left: 6vmax;
+        height: 10vmax;
+    }
+    div.sound {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eee;
+        font-size: 3vmax;
+        font-style: italic;
+        border: 1px solid;
     }
     </style>
     <script type="text/javascript">
@@ -149,7 +175,7 @@
       for (var i = 0; i < sel.length; i++) {
         data.push(sel[i].getAttribute('data-id'));
       }
-	  data = [''+startParam.msgid, data.join(',')];
+      data = [''+startParam.msgid, data.join(',')];
 
       Telegram.WebApp.sendData(data.join('|'));
     }
@@ -213,7 +239,7 @@
       td.classList.add('rownumtitle');
       tbody.children[0].appendChild(td);
 
-      const div = document.createElement('div');
+      var div = document.createElement('div');
       const btn = document.createElement('button');
       const pr = document.createElement('p');
       div.classList.add('top');
@@ -228,14 +254,35 @@
       wrp.classList.add('wrapper');
 
       document.body.appendChild(div);
+
+      var div = document.createElement('div');
+      div.classList.add('scene');
+      div.textContent = 'Сцена';
+      wrp.appendChild(div);
+      var scene = div;
+      div = document.createElement('div');
+      div.classList.add('sound');
+      div.textContent = 'Звукооператор';
+      wrp.appendChild(div);
+      var sound = div;
+
       wrp.appendChild(table);
       document.body.appendChild(wrp);
       updateSelected();
 
-      const resizeObserver = new ResizeObserver(e => {
-        table.style.width = (wrp.clientHeight > wrp.clientWidth ? `${Math.floor(wrp.clientHeight * table.clientWidth / table.clientHeight)}px` : '');
-      });
-      resizeObserver.observe(wrp);
+      const obs1 = (new ResizeObserver(e => {
+        var sc = scene.getClientRects()[0];
+        var wr = wrp.getClientRects()[0];
+        var tb = table.getClientRects()[0];
+        table.style.width = (wr.height > wr.width ? `${Math.floor((wr.height - sc.height - 12) * tb.width / tb.height)}px` : '');
+      })).observe(wrp);
+      const obs2 = (new ResizeObserver(e => {
+        var rect = document.querySelectorAll('[data-id="136"]')[0].getClientRects()[0];
+        sound.style.left = `${Math.floor(rect.x)}px`;
+        sound.style['margin-top'] = `${Math.floor(rect.height * 13)}px`;
+        sound.style.width = `${Math.floor(rect.width * 5)}px`;
+        sound.style.height = `${Math.floor(rect.height * 2)}px`;
+      })).observe(table);
     }
     function onWindowLoad() {
         window.startParam = (new URLSearchParams(location.hash.substr(1))).get("tgWebAppStartParam");
