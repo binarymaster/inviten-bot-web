@@ -279,7 +279,7 @@
       })).observe(wrp);
       const obs2 = (new ResizeObserver(e => {
         var rect = document.querySelectorAll('[data-id="136"]')[0].getClientRects()[0];
-        sound.style.left = `${Math.floor(rect.x)}px`;
+        sound.style['margin-left'] = `${Math.floor(rect.width * 3.4)}px`;
         sound.style['margin-top'] = `${Math.floor(rect.height * 13)}px`;
         sound.style.width = `${Math.floor(rect.width * 5)}px`;
         sound.style.height = `${Math.floor(rect.height * 2)}px`;
