@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=8.0, user-scalable=yes" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title></title>
+    <style>
+    html, body {
+        font-size: 3vw;
+        height: 100%;
+        color: white;
+        scroll-behavior: smooth;
+    }
+    @media screen and (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+    body {
+        margin: 0;
+        background-image: url(logo.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: Arial;
+        scrollbar-color: wheat #ffd;
+    }
+    div.header {
+        font-size: 2.7vw;
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+        background-color: rgba(152, 152, 152, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    div.header-wrap {
+        width: 100%;
+        height: 5vw;
+        background-color: rgb(152, 152, 152);
+    }
+    div.header ul {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+        padding: 0;
+    }
+    div.header li {
+        margin: 0 3vw; /* space between items */
+    }
+    div.header a {
+        color: white;
+        text-decoration: none;
+    }
+    div.header a:hover {
+        color: lightgray;
+    }
+    div.header a.button {
+        background-color: white;
+        color: rgb(152, 152, 152);
+        padding: 0.7vw;
+        border: 0.5vw solid transparent;
+        border-radius: 1vw;
+        transition: 0.3s;
+    }
+    div.header a.button:hover {
+        background-color: inherit;
+        color: white;
+        border: 0.5vmax solid;
+    }
+    div.logo {
+        width: 100%;
+        aspect-ratio: 1;
+        background-image: url(logo.jpg);
+        background-size: 100% auto;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    div.logo .date {
+        font-size: 4.5vw;
+        text-align: center;
+        padding-top: 40vw;
+    }
+    div.logo .addr {
+        font-size: 3.5vw;
+        padding-left: 2vw;
+        padding-top: 46vw;
+    }
+    div.section {
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 9vw;
+        padding-left: 10vw;
+        padding-right: 10vw;
+        padding-bottom: 4vw;
+        margin-bottom: 3vw;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 4vw;
+    }
+    div.sub-section {
+    }
+    div.sub-section.hidden {
+        display: none;
+    }
+    div.switch {
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        cursor: default;
+    }
+    div.switch .day {
+        font-size: 2.4vw;
+        color: inherit;
+        margin-left: 1vw;
+        padding: 1vw;
+        border-radius: 3vw;
+        border: 0.5vmax solid;
+    }
+    div.switch .day.sel {
+        color: black;
+        background: white;
+        border: 0.5vw solid transparent;
+    }
+    div.switch .push-right {
+        margin-left: auto;
+    }
+    div.section .item {
+        display: flex;
+        color: black;
+        background: linear-gradient(rgba(255, 255, 140, 0.3), rgba(255, 255, 255, 0.7));
+        margin-top: 2vw;
+        padding: 1.4vw;
+        border-radius: 2vw;
+    }
+    div.section .item span {
+        min-width: 22vw;
+        padding-top: 2vw;
+        white-space: nowrap;
+    }
+    div.section .desc {
+        width: 100%;
+        min-height: 10vw;
+        background: #ffd;
+        padding: 2vw;
+        border-radius: 1vw;
+    }
+    div.section iframe {
+        border: 0;
+        width: 100%;
+        aspect-ratio: 4/3;
+    }
+    </style>
+    <script type="text/javascript">
+    function daySelect(n) {
+      var sel = document.getElementsByClassName('day sel')[0];
+      sel.classList.remove('sel');
+      document.getElementsByClassName('day')[n].classList.add('sel');
+      document.getElementsByClassName('sub-section')[n].classList.remove('hidden');
+      document.getElementsByClassName('sub-section')[n ^ 1].classList.add('hidden');
+    }
+    function smoothScrollTo(e, duration) {
+        if (!duration) duration = 400;
+        const startPosition = window.scrollY;
+        const el = document.querySelectorAll(e.target.getAttribute('href'))[0];
+        if (!el) return false;
+        const targetPosition = window.scrollY + el.getBoundingClientRect().top;
+        const distance = targetPosition - startPosition;
+        let startTime = null;
+
+        function animation(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+
+            // Easing function (e.g., easeInOutQuad) to make the animation smooth
+            const ease = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+            window.scrollTo(0, ease);
+
+            if (timeElapsed < duration) {
+                // Continue the animation loop
+                requestAnimationFrame(animation);
+            }
+        }
+
+        // A simple easing function
+        function easeInOutQuad(t, b, c, d) {
+            t /= d / 2;
+            if (t < 1) return c / 2 * t * t + b;
+            t--;
+            return -c / 2 * (t * (t - 2) - 1) + b;
+        }
+
+        // Start the animation loop
+        requestAnimationFrame(animation);
+    }
+    function onWindowLoad() {
+      var links = document.querySelectorAll('.header a');
+      for (let i in links)
+        links[i].onclick = smoothScrollTo;
+    }
+    </script>
+</head>
+
+<body onload="onWindowLoad()">
+
+<div class="header">
+<ul>
+  <li> <a href="#about" onclick="">О&nbsp;конференции</a> </li>
+  <li> <a href="#program">Программа</a> </li>
+  <li> <a href="#contact">Контакты</a> </li>
+  <li> <a href="#contact" class="button">Зарегистрироваться</a> </li>
+</ul>
+</div>
+
+<div class="header-wrap"></div>
+<div class="logo">
+  <div class="date">6 – 7 февраля</div>
+  <div class="addr">г. Москва, ул. Малыгина, 20 (этаж 2)</div>
+</div>
+
+<div class="section" id="about">
+
+<div class="switch">
+О&nbsp;конференции
+</div>
+
+<p>
+Христианская конференция «Сияй» пройдёт 6 и 7 февраля 2026 года на базе религиозной организации «Московская Церковь евангельских христиан-трезвенников», по адресу г. Москва, ул. Малыгина, 20.
+</p>
+
+<p>
+Эта конференция для вас и для нас - для наших верующих братьев и сестёр.
+Её цель - помочь разобраться в себе, ответить на непростые вопросы, такие как:
+«что мне мешает расти во Христе?»;
+«как понять, какое у меня предназначение?»;
+«как мне быть постоянным в моём предназначении?».
+Показать, что с такими вопросами сталкиваются многие верующие.
+</p>
+
+<p>
+Организовать площадку для создания устойчивых доверительных отношений с нашими братьями и сёстрами из других церквей.
+И конечно, для приятного времяпровождения в кругу верующих друзей.
+</p>
+
+<p>
+Надеемся, что вы придёте к нам для того, чтобы разобраться в себе, получить ответы на вопросы,
+которые копились долгий период времени, такие как: «почему я не испытываю радость в жизни?».
+И также надеемся, что вы не уйдёте без ответов на ваши молитвы и вопросы.
+</p>
+
+<p>
+В нашей программе большое Богослужение, с тематическими проповедями, молитвами, песнопениями.
+С вкусными обедами, ужинами и кофе-брейками, интересными знакомствами, и общением друг с другом (в перерывах).
+</p>
+
+Ждём вас на конференции!
+</div>
+
+<div class="section" id="program">
+
+<div class="switch">
+  <div>Программа</div>
+  <div class="day sel push-right" onclick="daySelect(0)">пт</div>
+  <div class="day" onclick="daySelect(1)">сб</div>
+</div>
+
+<div class="sub-section">
+
+<div class="item">
+  <span>09:00 – 10:00</span>
+  <div class="desc">Регистрация</div>
+</div>
+<div class="item">
+  <span>10:00 – 10:10</span>
+  <div class="desc">Открытие конференции, приветственное слово</div>
+</div>
+<div class="item">
+  <span>10:10 – 10:15</span>
+  <div class="desc">Молитва</div>
+</div>
+<div class="item">
+  <span>10:15 – 10:20</span>
+  <div class="desc">Центральная песня</div>
+</div>
+<div class="item">
+  <span>10:20 – 11:00</span>
+  <div class="desc">Проповедь «Что мешает мне расти во Христе?»</div>
+</div>
+<div class="item">
+  <span>11:00 – 11:20</span>
+  <div class="desc">Общение в 10-ке (подмеченные тезисы)</div>
+</div>
+<div class="item">
+  <span>11:20 – 12:00</span>
+  <div class="desc">Кофе-брейк / общение</div>
+</div>
+<div class="item">
+  <span>12:00 – 12:15</span>
+  <div class="desc">Песнопение</div>
+</div>
+<div class="item">
+  <span>12:15 – 12:55</span>
+  <div class="desc">Проповедь «Как принять решение, сделать следующий шаг навстречу Господу?»</div>
+</div>
+<div class="item">
+  <span>12:55 – 13:15</span>
+  <div class="desc">Общая молитва</div>
+</div>
+<div class="item">
+  <span>13:15 – 13:35</span>
+  <div class="desc">Подготовка к обеду</div>
+</div>
+<div class="item">
+  <span>13:35 – 14:35</span>
+  <div class="desc">Обед</div>
+</div>
+<div class="item">
+  <span>14:35 – 16:00</span>
+  <div class="desc">Свободное время</div>
+</div>
+<div class="item">
+  <span>16:00 – 17:20</span>
+  <div class="desc">Проповедь / семинар «Как найти своё предназначение?»</div>
+</div>
+<div class="item">
+  <span>17:20 – 18:00</span>
+  <div class="desc">Прославление</div>
+</div>
+<div class="item">
+  <span>18:00 – 19:00</span>
+  <div class="desc">Ужин</div>
+</div>
+<div class="item">
+  <span>19:00 – …</span>
+  <div class="desc">Общая молитва для желающих</div>
+</div>
+
+</div>
+
+<div class="sub-section hidden">
+
+<div class="item">
+  <span>10:00 – 10:10</span>
+  <div class="desc">Вступительное слово</div>
+</div>
+<div class="item">
+  <span>10:10 – 10:15</span>
+  <div class="desc">Молитва</div>
+</div>
+<div class="item">
+  <span>10:15 – 10:20</span>
+  <div class="desc">Центральная песня</div>
+</div>
+<div class="item">
+  <span>10:20 – 11:00</span>
+  <div class="desc">Проповедь «Как быть постоянным в своём служении?»</div>
+</div>
+<div class="item">
+  <span>11:00 – 11:20</span>
+  <div class="desc">Общение в 10-ке (подмеченные тезисы и подготовка вопросов)</div>
+</div>
+<div class="item">
+  <span>11:20 – 12:00</span>
+  <div class="desc">Кофе-брейк / общение</div>
+</div>
+<div class="item">
+  <span>12:00 – 12:40</span>
+  <div class="desc">Проповедь «Надежда, которая не постыжает»</div>
+</div>
+<div class="item">
+  <span>12:40 – 13:00</span>
+  <div class="desc">Общая молитва</div>
+</div>
+<div class="item">
+  <span>13:00 – 14:00</span>
+  <div class="desc">Обед</div>
+</div>
+<div class="item">
+  <span>14:00 – 15:30</span>
+  <div class="desc">Свободное время</div>
+</div>
+<div class="item">
+  <span>15:30 – 16:30</span>
+  <div class="desc">Вопрос - ответ с залом (проповедники / спикеры)</div>
+</div>
+<div class="item">
+  <span>16:30 – 18:00</span>
+  <div class="desc">Прославление с молитвами</div>
+</div>
+<div class="item">
+  <span>18:00 – 19:00</span>
+  <div class="desc">Ужин</div>
+</div>
+<div class="item">
+  <span>19:00 – 19:10</span>
+  <div class="desc">Закрытие конференции</div>
+</div>
+<div class="item">
+  <span>19:10 – 19:15</span>
+  <div class="desc">Благодарственная молитва</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="section" id="contact">
+
+<div class="switch">
+Контакты
+</div>
+
+<p>Здесь будут наши контактные данные.</p>
+
+<p>Для регистрации и уточнения стоимости билетов свяжитесь с организатором конференции.</p>
+
+<p>г. Москва, ул. Малыгина, 20 (вход с улицы, этаж 2).</p>
+
+<div>
+<iframe src="https://yandex.ru/map-widget/v1/-/CLT0UFlG" frameborder="0" allowfullscreen></iframe>
+</div>
+
+</div>
+
+<div class="footer">
+</div>
+
+</body>
+</html>
