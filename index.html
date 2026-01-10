@@ -98,6 +98,10 @@
         background: #ffd;
         border-bottom: 1px solid black;
     }
+    div.top select {
+        margin-left: 3vmax;
+        font-size: 2vmax;
+    }
     div.top button {
         font-size: 2.6vmax;
         float: right;
@@ -147,53 +151,109 @@
     }
     function updateSelected() {
       const pr = document.getElementById('selection');
+      const daysel = document.getElementById('day') ? parseInt(document.getElementById('day').value) : -1;
 
-      const sel = document.getElementsByClassName('selected');
-      if (sel.length == 0) {
+      const seat = document.getElementsByClassName('seat');
+      for (const s of seat) {
+        s.classList.remove('selected');
+        s.classList.remove('held');
+        s.addEventListener("click", doSelect);
+      }
+      if (startParam.sel.length == 0) {
         pr.textContent = 'Места не выбраны';
         return;
       }
 
       var text = [];
-      for (var i = 0; i < sel.length; i++) {
-        text.push(`ряд ${sel[i].getAttribute('data-row')} место ${sel[i].textContent}`);
+      for (let i in startParam.held) {
+        if (daysel > -1 && !startParam.held[i].includes(daysel))
+          continue;
+        var el = document.querySelector(`[data-id="${i}"]`);
+        el.classList.add('held');
+        el.removeEventListener("click", doSelect);
+      }
+      for (let i in startParam.sel) {
+        var el = document.querySelector(`[data-id="${i}"]`);
+        var st = `ряд ${el.getAttribute('data-row')} место ${el.textContent}`;
+        if (startParam.sel[i].length < startParam.seats.length) {
+          var days = [];
+          for (var j = 0; j < startParam.sel[i].length; j++)
+            days.push(startParam.sel[i][j] + 1);
+          st += ` (день ${days.join(', ')})`;
+        }
+        text.push(st);
+        if (daysel > -1 && !startParam.sel[i].includes(daysel))
+          continue;
+        el.classList.add('selected');
       }
       pr.textContent = 'Выбраны места: ' + text.join(', ');
     }
     function doSelect(e) {
       const td = e.currentTarget;
-      if (td.classList.contains('selected'))
-        td.classList.remove('selected');
-      else {
+      const id = parseInt(td.getAttribute('data-id'));
+      const daysel = document.getElementById('day') ? parseInt(document.getElementById('day').value) : -1;
+
+      if (startParam.sel[id] && (daysel == -1 || startParam.sel[id].includes(daysel))) {
+        if (daysel == -1)
+          delete startParam.sel[id];
+        else {
+          startParam.sel[id].splice(startParam.sel[id].indexOf(daysel), 1);
+          if (!startParam.sel[id].length)
+            delete startParam.sel[id];
+        }
+      } else {
         if (startParam.maxsel) {
-          const sel = document.getElementsByClassName('selected');
-          if (sel.length >= startParam.maxsel)
+          var sel = 0;
+          for (let i in startParam.sel) {
+            if (daysel > -1 && !startParam.sel[i].includes(daysel))
+              continue;
+            sel++;
+          }
+          if (sel >= startParam.maxsel)
             return;
         }
-        td.classList.add('selected');
+        if (daysel == -1) {
+          var sel = [];
+          for (var i = 0; i < startParam.seats.length; i++)
+            sel.push(i);
+          startParam.sel[id] = sel;
+        } else {
+          if (startParam.sel[id])
+            startParam.sel[id].push(daysel);
+          else
+            startParam.sel[id] = [daysel];
+        }
       }
       updateSelected();
     }
     function submitSelection() {
-      const sel = document.getElementsByClassName('selected');
-
       var data = [];
-      for (var i = 0; i < sel.length; i++) {
-        data.push(sel[i].getAttribute('data-id'));
+      for (var i = 0; i < startParam.seats.length; i++) {
+        var day = [];
+        for (let j in startParam.sel) {
+          if (startParam.sel[j].includes(i))
+            day.push(j);
+        }
+        data.push(day.join(','));
       }
-      data = [''+startParam.msgid, data.join(',')];
+      data.unshift(''+startParam.msgid);
 
       Telegram.WebApp.sendData(data.join('|'));
     }
     function displaySeats() {
-      document.getElementsByTagName('body')[0].innerHTML = '';
       const table = document.createElement('table');
       const tbody = document.createElement('tbody');
       table.classList.add('seats');
       table.appendChild(tbody);
+      startParam.sel = [];
+      startParam.held = [];
+      let sel = startParam.sel;
+      let hld = startParam.held;
 
-      var scheme = startParam.seats, width = 0, rows = 0, total = 0;
-      scheme = scheme.split("\n");
+      var seats = startParam.seats;
+      for (let i in seats)
+        seats[i] = seats[i].split("\n");
+      var scheme = seats[0], width = 0, rows = 0, total = 0;
       for (let i in scheme)
         width = Math.max(width, scheme[i].length);
       for (let i in scheme) {
@@ -204,14 +264,21 @@
         for (let j in scheme[i]) {
           const td = addCell(scheme[i][j] == ' ' ? ' ' : ''+count);
           if (scheme[i][j] != ' ') {
+            for (var k = 0; k < seats.length; k++) {
+              if (seats[k][i][j] == 'S') {
+                if (sel[total])
+                  sel[total].push(k);
+                else
+                  sel[total] = [k];
+              } else if (seats[k][i][j] == 'H') {
+                if (hld[total])
+                  hld[total].push(k);
+                else
+                  hld[total] = [k];
+              }
+            }
             td.classList.add('seat');
-            if (scheme[i][j] == 'S')
-              td.classList.add('selected');
-            else if (scheme[i][j] == 'H')
-              td.classList.add('held');
             td.setAttribute('data-id', total++);
-            if (scheme[i][j] == 'x' || scheme[i][j] == 'S')
-              td.addEventListener("click", doSelect);
             count++;
           } else {
             if ((i == 1 && j == 2) || (i == 1 && j == 12) || (i == 8 && j == 2) || (i == 8 && j == 12))
@@ -253,11 +320,29 @@
       const pr = document.createElement('p');
       div.classList.add('top');
       div.textContent = (startParam.reserve ? '💺 Резервирование мест в зале' : '💺 Выбор мест в зале');
+      if (startParam.reserve && startParam.seats.length > 1) {
+        const sl = document.createElement('select');
+        sl.setAttribute('id', 'day');
+        var opt = document.createElement('option');
+        opt.setAttribute('value', -1);
+        opt.textContent = 'На все дни (совмещение)';
+        sl.appendChild(opt);
+        for (var i = 0; i < startParam.seats.length; i++) {
+          opt = document.createElement('option');
+          opt.setAttribute('value', i);
+          opt.textContent = 'День ' + (i + 1);
+          sl.appendChild(opt);
+        }
+        sl.addEventListener("change", updateSelected);
+        div.appendChild(sl);
+      }
       btn.textContent = 'Подтвердить';
       btn.addEventListener("click", submitSelection);
       div.appendChild(btn);
       pr.setAttribute('id', 'selection');
       div.appendChild(pr);
+
+      document.getElementsByTagName('body')[0].innerHTML = '';
 
       const wrp = document.createElement('div');
       const wrp2 = document.createElement('div');
