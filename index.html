@@ -162,7 +162,7 @@
 
       startParam.held.forEach((value, key) => {
         if (daysel > -1 && !value.includes(daysel))
-          continue;
+          return;
         var el = document.querySelector(`[data-id="${i}"]`);
         el.classList.add('held');
         el.removeEventListener("click", doSelect);
@@ -185,7 +185,7 @@
         }
         text.push(st);
         if (daysel > -1 && !value.includes(daysel))
-          continue;
+          return;
         el.classList.add('selected');
       });
       pr.textContent = 'Выбраны места: ' + text.join(', ');
@@ -208,7 +208,7 @@
           var sel = 0;
           startParam.sel.forEach((value, key) => {
             if (daysel > -1 && !value.includes(daysel))
-              continue;
+              return;
             sel++;
           });
           if (sel >= startParam.maxsel)
