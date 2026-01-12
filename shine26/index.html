@@ -6,6 +6,9 @@
     <meta name="robots" content="noindex,nofollow" />
     <title></title>
     <style>
+    :root {
+        --lr-pad: 7vw;
+    }
     html, body {
         font-size: 16px;
         height: 100%;
@@ -62,7 +65,7 @@
         color: rgb(152, 152, 152);
         padding: 6px;
         border: 2px solid transparent;
-        border-radius: 8px;
+        border-radius: 7px;
         transition: 0.3s;
     }
     div.header a.button:hover, div.menu-float a.button:hover {
@@ -84,6 +87,12 @@
         }
         div.header li:not(.show) {
             display: none;
+        }
+        div.header li {
+            margin: 0 6px; /* space between items */
+        }
+        div.header li:last-child {
+            margin-right: var(--lr-pad);
         }
     }
     div.menu-float {
@@ -123,8 +132,8 @@
     div.section {
         background-color: rgba(0, 0, 0, 0.4);
         padding-top: 54px;
-        padding-left: 10vw;
-        padding-right: 10vw;
+        padding-left: var(--lr-pad);
+        padding-right: var(--lr-pad);
         padding-bottom: 54px;
         margin-bottom: 24px;
         backdrop-filter: blur(10px);
