@@ -159,33 +159,33 @@
         s.classList.remove('held');
         s.addEventListener("click", doSelect);
       }
-      if (startParam.sel.length == 0) {
+      if (startParam.sel.size == 0) {
         pr.textContent = 'Места не выбраны';
         return;
       }
 
       var text = [];
-      for (let i in startParam.held) {
-        if (daysel > -1 && !startParam.held[i].includes(daysel))
+      startParam.held.forEach((value, key) => {
+        if (daysel > -1 && !value.includes(daysel))
           continue;
         var el = document.querySelector(`[data-id="${i}"]`);
         el.classList.add('held');
         el.removeEventListener("click", doSelect);
-      }
-      for (let i in startParam.sel) {
-        var el = document.querySelector(`[data-id="${i}"]`);
+      });
+      startParam.sel.forEach((value, key) => {
+        var el = document.querySelector(`[data-id="${key}"]`);
         var st = `ряд ${el.getAttribute('data-row')} место ${el.textContent}`;
-        if (startParam.sel[i].length < startParam.seats.length) {
+        if (value.length < startParam.seats.length) {
           var days = [];
-          for (var j = 0; j < startParam.sel[i].length; j++)
-            days.push(startParam.sel[i][j] + 1);
+          for (var j = 0; j < value.length; j++)
+            days.push(value[j] + 1);
           st += ` (день ${days.join(', ')})`;
         }
         text.push(st);
-        if (daysel > -1 && !startParam.sel[i].includes(daysel))
+        if (daysel > -1 && !value.includes(daysel))
           continue;
         el.classList.add('selected');
-      }
+      });
       pr.textContent = 'Выбраны места: ' + text.join(', ');
     }
     function doSelect(e) {
@@ -193,22 +193,22 @@
       const id = parseInt(td.getAttribute('data-id'));
       const daysel = document.getElementById('day') ? parseInt(document.getElementById('day').value) : -1;
 
-      if (startParam.sel[id] && (daysel == -1 || startParam.sel[id].includes(daysel))) {
+      if (startParam.sel.has(id) && (daysel == -1 || startParam.sel.get(id).includes(daysel))) {
         if (daysel == -1)
-          delete startParam.sel[id];
+          startParam.sel.delete(id);
         else {
-          startParam.sel[id].splice(startParam.sel[id].indexOf(daysel), 1);
-          if (!startParam.sel[id].length)
-            delete startParam.sel[id];
+          startParam.sel.get(id).splice(startParam.sel.get(id).indexOf(daysel), 1);
+          if (!startParam.sel.get(id).length)
+            startParam.sel.delete(id);
         }
       } else {
         if (startParam.maxsel) {
           var sel = 0;
-          for (let i in startParam.sel) {
-            if (daysel > -1 && !startParam.sel[i].includes(daysel))
+          startParam.sel.forEach((value, key) => {
+            if (daysel > -1 && !value.includes(daysel))
               continue;
             sel++;
-          }
+          });
           if (sel >= startParam.maxsel)
             return;
         }
@@ -216,12 +216,12 @@
           var sel = [];
           for (var i = 0; i < startParam.seats.length; i++)
             sel.push(i);
-          startParam.sel[id] = sel;
+          startParam.sel.set(id, sel);
         } else {
-          if (startParam.sel[id])
-            startParam.sel[id].push(daysel);
+          if (startParam.sel.has(id))
+            startParam.sel.get(id).push(daysel);
           else
-            startParam.sel[id] = [daysel];
+            startParam.sel.set(id, [daysel]);
         }
       }
       updateSelected();
@@ -230,10 +230,10 @@
       var data = [];
       for (var i = 0; i < startParam.seats.length; i++) {
         var day = [];
-        for (let j in startParam.sel) {
-          if (startParam.sel[j].includes(i))
-            day.push(j);
-        }
+        startParam.sel.forEach((value, key) => {
+          if (value.includes(i))
+            day.push(key);
+        });
         data.push(day.join(','));
       }
       data.unshift(''+startParam.msgid);
@@ -245,8 +245,8 @@
       const tbody = document.createElement('tbody');
       table.classList.add('seats');
       table.appendChild(tbody);
-      startParam.sel = [];
-      startParam.held = [];
+      startParam.sel = new Map();
+      startParam.held = new Map();
       let sel = startParam.sel;
       let hld = startParam.held;
 
@@ -266,15 +266,15 @@
           if (scheme[i][j] != ' ') {
             for (var k = 0; k < seats.length; k++) {
               if (seats[k][i][j] == 'S') {
-                if (sel[total])
-                  sel[total].push(k);
+                if (sel.has(total))
+                  sel.get(total).push(k);
                 else
-                  sel[total] = [k];
+                  sel.set(total, [k]);
               } else if (seats[k][i][j] == 'H') {
-                if (hld[total])
-                  hld[total].push(k);
+                if (hld.has(total))
+                  hld.get(total).push(k);
                 else
-                  hld[total] = [k];
+                  hld.set(total, [k]);
               }
             }
             td.classList.add('seat');
