@@ -159,12 +159,7 @@
         s.classList.remove('held');
         s.addEventListener("click", doSelect);
       }
-      if (startParam.sel.size == 0) {
-        pr.textContent = 'Места не выбраны';
-        return;
-      }
 
-      var text = [];
       startParam.held.forEach((value, key) => {
         if (daysel > -1 && !value.includes(daysel))
           continue;
@@ -172,6 +167,13 @@
         el.classList.add('held');
         el.removeEventListener("click", doSelect);
       });
+
+      if (startParam.sel.size == 0) {
+        pr.textContent = 'Места не выбраны';
+        return;
+      }
+
+      var text = [];
       startParam.sel.forEach((value, key) => {
         var el = document.querySelector(`[data-id="${key}"]`);
         var st = `ряд ${el.getAttribute('data-row')} место ${el.textContent}`;
