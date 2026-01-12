@@ -160,13 +160,13 @@
         s.addEventListener("click", doSelect);
       }
 
-      startParam.held.forEach((value, key) => {
+      for (let [key, value] of startParam.held) {
         if (daysel > -1 && !value.includes(daysel))
-          return;
-        var el = document.querySelector(`[data-id="${i}"]`);
+          continue;
+        var el = document.querySelector(`[data-id="${key}"]`);
         el.classList.add('held');
         el.removeEventListener("click", doSelect);
-      });
+      }
 
       if (startParam.sel.size == 0) {
         pr.textContent = 'Места не выбраны';
@@ -174,7 +174,7 @@
       }
 
       var text = [];
-      startParam.sel.forEach((value, key) => {
+      for (let [key, value] of startParam.sel) {
         var el = document.querySelector(`[data-id="${key}"]`);
         var st = `ряд ${el.getAttribute('data-row')} место ${el.textContent}`;
         if (value.length < startParam.seats.length) {
@@ -185,9 +185,9 @@
         }
         text.push(st);
         if (daysel > -1 && !value.includes(daysel))
-          return;
+          continue;
         el.classList.add('selected');
-      });
+      }
       pr.textContent = 'Выбраны места: ' + text.join(', ');
     }
     function doSelect(e) {
@@ -206,11 +206,11 @@
       } else {
         if (startParam.maxsel) {
           var sel = 0;
-          startParam.sel.forEach((value, key) => {
+          for (let [key, value] of startParam.sel) {
             if (daysel > -1 && !value.includes(daysel))
-              return;
+              continue;
             sel++;
-          });
+          }
           if (sel >= startParam.maxsel)
             return;
         }
@@ -232,10 +232,10 @@
       var data = [];
       for (var i = 0; i < startParam.seats.length; i++) {
         var day = [];
-        startParam.sel.forEach((value, key) => {
+        for (let [key, value] of startParam.sel) {
           if (value.includes(i))
             day.push(key);
-        });
+        }
         data.push(day.join(','));
       }
       data.unshift(''+startParam.msgid);
