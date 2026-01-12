@@ -7,7 +7,7 @@
     <title></title>
     <style>
     html, body {
-        font-size: 15px;
+        font-size: 16px;
         height: 100%;
         color: white;
         scroll-behavior: smooth;
@@ -28,7 +28,7 @@
         scrollbar-color: wheat #ffd;
     }
     div.header {
-        font-size: 17px;
+        font-size: 15px;
         position: fixed;
         width: 100%;
         z-index: 1;
@@ -48,7 +48,7 @@
         padding: 0;
     }
     div.header li {
-        margin: 0 3vw; /* space between items */
+        margin: 0 24px; /* space between items */
     }
     div.header a, div.menu-float a {
         color: white;
@@ -60,9 +60,9 @@
     div.header a.button, div.menu-float a.button {
         background-color: white;
         color: rgb(152, 152, 152);
-        padding: 0.7vw;
+        padding: 6px;
         border: 2px solid transparent;
-        border-radius: 1vw;
+        border-radius: 8px;
         transition: 0.3s;
     }
     div.header a.button:hover, div.menu-float a.button:hover {
@@ -72,6 +72,9 @@
     }
     @media only screen and (min-width: 600px) {
         div.header li.menu {
+            display: none;
+        }
+        div.menu-float {
             display: none;
         }
     }
@@ -123,10 +126,10 @@
         padding-left: 10vw;
         padding-right: 10vw;
         padding-bottom: 54px;
-        margin-bottom: 3vw;
+        margin-bottom: 24px;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border-radius: 4vw;
+        border-radius: 32px;
     }
     div.sub-section {
     }
@@ -142,8 +145,8 @@
     div.switch .day {
         font-size: 11px;
         color: inherit;
-        margin-left: 1vw;
-        padding: 1vw;
+        margin-left: 6px;
+        padding: 9px;
         border-radius: 24px;
         border: 2px solid;
     }
@@ -161,17 +164,17 @@
         background: linear-gradient(rgba(255, 255, 140, 0.3), rgba(255, 255, 255, 0.7));
         margin-top: 12px;
         padding: 4px;
-        padding-left: 10px;
+        padding-left: 12px;
         border-radius: 14px;
     }
     div.section .item span {
-        min-width: 102px;
+        min-width: 110px;
         padding-top: 8px;
         white-space: nowrap;
     }
     div.section .desc {
         width: 100%;
-        min-height: 10vw;
+        min-height: 64px;
         background: #ffd;
         padding: 8px;
         border-radius: 8px;
