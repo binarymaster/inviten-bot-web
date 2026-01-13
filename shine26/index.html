@@ -112,7 +112,14 @@
         transform: translateX(calc(100vw + 100%));
     }
     div.menu-float div {
-        padding: 3vw;
+        padding-top: 3vw;
+        padding-bottom: 3vw;
+        padding-right: 6px;
+        margin-right: var(--lr-pad);
+    }
+    div.menu-float div.menu {
+        font-size: 15px;
+        margin-top: 2px;
     }
     div.logo {
         width: 100%;
@@ -262,12 +269,12 @@
   <li> <a href="#program">Программа</a> </li>
   <li> <a href="#contact">Как добраться</a> </li>
   <li class="show"> <a href="https://t.me/inviten2025_skdnkln_bot" class="button">Зарегистрироваться</a> </li>
-  <li class="show menu"> <a href="#" class="button" onclick="toggleMenu(); return false"> ≡ </a> </li>
+  <li class="show menu"> <a href="#" class="button" onclick="toggleMenu(); return false"><i class="fa-solid fa-bars"></i></a> </li>
 </ul>
 </div>
 
 <div class="menu-float offscreen">
-  <div class="menu"> <a href="#" class="button" onclick="toggleMenu(); return false"> × </a> </div>
+  <div class="menu"> <a href="#" class="button" onclick="toggleMenu(); return false"><i class="fa-solid fa-x"></i></a> </div>
   <div> <a href="#program">Программа</a> </div>
   <div> <a href="#contact">Как добраться</a> </div>
   <div> <a href="https://t.me/inviten2025_skdnkln_bot" class="button">Зарегистрироваться</a> </div>
